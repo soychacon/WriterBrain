@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Writer and the Brain — Editorial Calendar</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --mon: #E8F0FB;
+    --mon-accent: #2563EB;
+    --mon-dark: #1e3a6e;
+    --wed: #F0EDFB;
+    --wed-accent: #7C3AED;
+    --wed-dark: #3b1f7a;
+    --fri: #E6F7F0;
+    --fri-accent: #059669;
+    --fri-dark: #064e35;
+    --bg: #FAFAF8;
+    --surface: #FFFFFF;
+    --border: #E5E2DA;
+    --text: #1C1A16;
+    --muted: #7A776E;
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 40px 24px 80px;
+  }
+
+  header {
+    max-width: 1100px;
+    margin: 0 auto 40px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 24px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .title-block h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+  }
+
+  .title-block h1 em {
+    font-style: italic;
+    color: var(--muted);
+  }
+
+  .title-block p {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 6px;
+    font-weight: 300;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  button {
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+  }
+
+  .btn {
+    padding: 8px 16px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    transition: all 0.15s;
+  }
+
+  .btn:hover { background: #f0ede6; }
+
+  .btn-primary {
+    background: var(--text);
+    color: white;
+    border-color: var(--text);
+  }
+
+  .btn-primary:hover { background: #333; }
+
+  .legend {
+    display: flex;
+    gap: 20px;
+    max-width: 1100px;
+    margin: 0 auto 20px;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+  }
+
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .cal {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .week-block {
+    margin-bottom: 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    overflow: hidden;
+  }
+
+  .week-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: #F5F3EE;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .week-label {
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+
+  .week-dates {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .week-remove {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 18px;
+    line-height: 1;
+    padding: 0 4px;
+    opacity: 0.4;
+    transition: opacity 0.15s;
+  }
+
+  .week-remove:hover { opacity: 1; color: #c0392b; }
+
+  .cells {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .cell {
+    padding: 14px 16px;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 140px;
+  }
+
+  .cell:last-child { border-right: none; }
+
+  .cell.mon { background: var(--mon); }
+  .cell.wed { background: var(--wed); }
+  .cell.fri { background: var(--fri); }
+
+  .cell-label {
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .cell.mon .cell-label { color: var(--mon-dark); }
+  .cell.wed .cell-label { color: var(--wed-dark); }
+  .cell.fri .cell-label { color: var(--fri-dark); }
+
+  .cell-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .cell.mon .cell-dot { background: var(--mon-accent); }
+  .cell.wed .cell-dot { background: var(--wed-accent); }
+  .cell.fri .cell-dot { background: var(--fri-accent); }
+
+  .cell textarea {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--text);
+    resize: none;
+    outline: none;
+    width: 100%;
+    min-height: 80px;
+  }
+
+  .cell textarea::placeholder { color: #b0ada6; }
+
+  .cell textarea:focus {
+    background: rgba(255,255,255,0.6);
+    border-radius: 6px;
+    padding: 6px;
+    margin: -6px;
+    width: calc(100% + 12px);
+  }
+
+  .status-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .status-pill {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.1s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .status-pill.idea   { background: #F5F3EE; border-color: var(--border); color: var(--muted); }
+  .status-pill.draft  { background: #FEF3C7; border-color: #D97706; color: #92400E; }
+  .status-pill.ready  { background: #DCFCE7; border-color: #16A34A; color: #14532D; }
+  .status-pill.posted { background: #E0E7FF; border-color: #4F46E5; color: #312E81; }
+  .status-pill.active { outline: 2px solid currentColor; outline-offset: 1px; }
+
+  .add-week {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    padding: 16px 0;
+  }
+
+  .btn-add {
+    border: 1.5px dashed var(--border);
+    background: none;
+    color: var(--muted);
+    padding: 10px 28px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s;
+  }
+
+  .btn-add:hover { border-color: #999; color: var(--text); background: var(--surface); }
+
+  .col-headers {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    max-width: 1100px;
+    margin: 0 auto 10px;
+    gap: 1px;
+  }
+
+  .col-head {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 10px;
+    border-radius: var(--radius);
+  }
+
+  .col-head.mon { background: var(--mon); color: var(--mon-dark); }
+  .col-head.wed { background: var(--wed); color: var(--wed-dark); }
+  .col-head.fri { background: var(--fri); color: var(--fri-dark); }
+
+  footer {
+    max-width: 1100px;
+    margin: 40px auto 0;
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  #saved-msg {
+    font-size: 12px;
+    color: var(--fri-accent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  @media (max-width: 700px) {
+    .cells { grid-template-columns: 1fr; }
+    .cell { border-right: none; border-bottom: 1px solid var(--border); }
+    .col-headers { grid-template-columns: 1fr; gap: 6px; }
+    header { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="title-block">
+    <h1>The Writer <em>&</em> the Brain</h1>
+    <p>Editorial Calendar — Monday · Wednesday · Friday</p>
+  </div>
+  <div class="header-actions">
+    <span id="saved-msg">✓ Saved</span>
+    <button class="btn" onclick="clearAll()">Clear all</button>
+    <button class="btn btn-primary" onclick="printCal()">Print / Save PDF</button>
+  </div>
+</header>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#2563EB"></div> Monday — The Brain</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#7C3AED"></div> Wednesday — Mysticism</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#059669"></div> Friday — AI & Writing</div>
+</div>
+
+<div class="col-headers">
+  <div class="col-head mon">🧠 Monday — The Brain</div>
+  <div class="col-head wed">✦ Wednesday — Mysticism</div>
+  <div class="col-head fri">◈ Friday — AI & Writing</div>
+</div>
+
+<div class="cal" id="cal"></div>
+
+<div class="add-week">
+  <button class="btn-add" onclick="addWeek()">+ Add week</button>
+</div>
+
+<footer>
+  <span>The Writer and the Brain · MWF Schedule</span>
+  <span>Click any cell to edit · Changes auto-save in browser</span>
+</footer>
+
+<script>
+const WEEKS_KEY = 'watb_weeks';
+const DATA_KEY  = 'watb_data';
+
+const defaultWeeks = [
+  { label: 'Week 1', mon: 'May 19', wed: 'May 21', fri: 'May 23' },
+  { label: 'Week 2', mon: 'May 26', wed: 'May 28', fri: 'May 30' },
+  { label: 'Week 3', mon: 'Jun 2',  wed: 'Jun 4',  fri: 'Jun 6'  },
+  { label: 'Week 4', mon: 'Jun 9',  wed: 'Jun 11', fri: 'Jun 13' },
+];
+
+const defaultContent = {
+  0: {
+    mon: 'London cab drivers & the hippocampus — how memorizing The Knowledge literally grows the brain. Relate to our agency over cognitive-creative abilities.',
+    wed: 'Books + ideas from my occult seminar prep — mysticism readings, key themes, links.',
+    fri: 'Writers and large language models — how AI is changing (and not changing) the creative process.',
+    monStatus: 'idea', wedStatus: 'idea', friStatus: 'idea'
+  }
+};
+
+let weeks = JSON.parse(localStorage.getItem(WEEKS_KEY) || 'null') || defaultWeeks;
+let data  = JSON.parse(localStorage.getItem(DATA_KEY)  || 'null') || defaultContent;
+
+function save() {
+  localStorage.setItem(WEEKS_KEY, JSON.stringify(weeks));
+  localStorage.setItem(DATA_KEY,  JSON.stringify(data));
+  const msg = document.getElementById('saved-msg');
+  msg.style.opacity = '1';
+  setTimeout(() => msg.style.opacity = '0', 1500);
+}
+
+function getCell(wi, day) {
+  if (!data[wi]) data[wi] = { monStatus:'idea', wedStatus:'idea', friStatus:'idea' };
+  return data[wi][day] || '';
+}
+
+function setCell(wi, day, val) {
+  if (!data[wi]) data[wi] = { monStatus:'idea', wedStatus:'idea', friStatus:'idea' };
+  data[wi][day] = val;
+  save();
+}
+
+function getStatus(wi, day) {
+  if (!data[wi]) return 'idea';
+  return data[wi][day + 'Status'] || 'idea';
+}
+
+function setStatus(wi, day, status) {
+  if (!data[wi]) data[wi] = { monStatus:'idea', wedStatus:'idea', friStatus:'idea' };
+  data[wi][day + 'Status'] = status;
+  save();
+  renderCal();
+}
+
+const statuses = ['idea', 'draft', 'ready', 'posted'];
+const statusLabels = { idea: 'Idea', draft: 'Draft', ready: 'Ready', posted: 'Posted' };
+
+function statusPills(wi, day) {
+  const cur = getStatus(wi, day);
+  return statuses.map(s =>
+    `<button class="status-pill ${s} ${s === cur ? 'active' : ''}"
+      onclick="setStatus(${wi},'${day}','${s}')">${statusLabels[s]}</button>`
+  ).join('');
+}
+
+function renderCal() {
+  const cal = document.getElementById('cal');
+  cal.innerHTML = weeks.map((w, i) => `
+    <div class="week-block">
+      <div class="week-header">
+        <span class="week-label">${w.label}</span>
+        <span class="week-dates">${w.mon} &nbsp;·&nbsp; ${w.wed} &nbsp;·&nbsp; ${w.fri}</span>
+        <button class="week-remove" onclick="removeWeek(${i})" title="Remove week">×</button>
+      </div>
+      <div class="cells">
+        ${['mon','wed','fri'].map(day => `
+          <div class="cell ${day}">
+            <div class="cell-label">
+              <div class="cell-dot"></div>
+              ${day === 'mon' ? 'Brain' : day === 'wed' ? 'Mysticism' : 'AI & Writing'}
+              &nbsp;·&nbsp; ${w[day]}
+            </div>
+            <textarea
+              placeholder="${day === 'mon' ? 'Monday brain post…' : day === 'wed' ? 'Wednesday mysticism idea…' : 'Friday AI post…'}"
+              oninput="setCell(${i},'${day}',this.value)"
+            >${getCell(i, day)}</textarea>
+            <div class="status-row">${statusPills(i, day)}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function addWeek() {
+  const n = weeks.length;
+  const labels = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const base = new Date(2026, 4, 19);
+  base.setDate(base.getDate() + n * 7);
+  const mon = new Date(base);
+  const wed = new Date(base); wed.setDate(base.getDate() + 2);
+  const fri = new Date(base); fri.setDate(base.getDate() + 4);
+  const fmt = d => `${labels[d.getMonth()]} ${d.getDate()}`;
+  weeks.push({ label: `Week ${n + 1}`, mon: fmt(mon), wed: fmt(wed), fri: fmt(fri) });
+  save();
+  renderCal();
+}
+
+function removeWeek(i) {
+  if (weeks.length <= 1) return;
+  if (!confirm(`Remove ${weeks[i].label}?`)) return;
+  weeks.splice(i, 1);
+  const newData = {};
+  Object.keys(data).forEach(k => {
+    const ki = parseInt(k);
+    if (ki < i) newData[ki] = data[k];
+    else if (ki > i) newData[ki - 1] = data[k];
+  });
+  data = newData;
+  save();
+  renderCal();
+}
+
+function clearAll() {
+  if (!confirm('Clear all content? This cannot be undone.')) return;
+  data = {};
+  save();
+  renderCal();
+}
+
+function printCal() {
+  window.print();
+}
+
+renderCal();
+</script>
+</body>
+</html>
